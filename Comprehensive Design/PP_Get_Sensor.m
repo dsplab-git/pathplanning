@@ -13,7 +13,7 @@ Angle_Resolution = abs(S_Sensor.lrfResolutionAngle);
 LRF = zeros(FoV / Angle_Resolution + 1, 2);         % 굳이 A x 2의 배열 형태로 만든 이유는 line 236에서 2번째 행을 써먹기 위해
 LRF(:, 1) = -FoV / 2 : Angle_Resolution : FoV/2;    % -180부터 180까지 1씩 간격을 맞춘 배열
 
-angle_line_W = LRF(:,1) - Robot_State(4);           % Robot_State(4)는 theta를 의미
+angle_line_W = LRF(:,1) + Robot_State(4);           % Robot_State(4)는 theta를 의미
 dx = cosd(angle_line_W);
 dy = sind(angle_line_W);
 

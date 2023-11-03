@@ -30,7 +30,7 @@ function PP_Show_Path( Robot_State_Array, S_Map, S_Sensor, N_figure )
     plot(S_Map.coditionArrival * sin(0:pi/10:2*pi) + end_point(2),S_Map.coditionArrival * cos(0:pi/10:2*pi) + end_point(1),'r')
     hold off
     subplot(1,2,2)
-    polarplot((S_Sensor.lrfData(:,1) + Robot_State(4))*pi/180,S_Sensor.lrfData(:,2)')                             % LRF 원형 그래프를 보여주기 위해!
+    polarplot(S_Sensor.lrfData(:,1)*pi/180,S_Sensor.lrfData(:,2)')                             % LRF 원형 그래프를 보여주기 위해!
     drawnow   
    
 end
