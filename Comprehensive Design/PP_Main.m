@@ -9,7 +9,7 @@ Robot_Size = 5;
 MAX_SIMULATION = 10000;
 %% Initialize
 % Set Map & Sensor & Robot State
-[S_Map, S_Sensor, Robot_State]= PP_Set_Init('map1.png', Robot_Size);
+[S_Map, S_Sensor, Robot_State]= PP_Set_Init('map2.png', Robot_Size);
 
 %% Record Save Array
 Robot_State_Save = Robot_State;
