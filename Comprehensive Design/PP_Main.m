@@ -68,19 +68,9 @@ while(PP_Collision_Check(Robot_State_Array(:,1:Robot_State_Array_index), S_Map) 
     end
 
 
-    % Q1 장애물이 있는 경우 LRF에 값이 입력됨 이를 이용하여 회피하는 알고리즘
-    % Input = 중간 목적지 (Goal_x, Goal_y), 주변 장애물 정보 (LRF)
-    % Output = 제어 입력 (A_control, V_contorl)
-
-
     % 중간 목적지에 도달한 경우 다음 지점을 향해서 이동함
     if(norm([Goal_y - Robot_State(2),Goal_x - Robot_State(1)]) < Ref_Speed)
         Mid_State = Mid_State+1;
-    end
-
-    % 목적지 도착시 종료
-    if Mid_State > size(Mid_Point,1)
-        break;
     end
 
     % PP output
