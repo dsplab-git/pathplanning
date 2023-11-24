@@ -7,6 +7,7 @@ Control_mode = 2; % [mode 1] : d_v d_theta | [mode 2] : d_x d_y | [mode 3] : vl 
 
 Robot_Size = 5;
 MAX_SIMULATION = 10000;
+initial_flag = 0;
 %% Initialize
 % Set Map & Sensor & Robot State
 [S_Map, S_Sensor, Robot_State]= PP_Set_Init('map1.png', Robot_Size);
@@ -26,17 +27,17 @@ Robot_State_Array(:,Robot_State_Array_index) = Robot_State_Save;
 
 %%%%%%%%%%%%%%%%%%%% 코드에서 사용하는 초기 변수 선언부 %%%%%%%%%%%%%%%%%%%%%%         
 % 
-
-
+Mid_State = 1;
+Ref_Speed = 5;
 %
 %%%%%%%%%%%%%%%%%%%%%%%%% Global Motion Planning %%%%%%%%%%%%%%%%%%%%%%%%%%
 % Input = 장애물 정보 ( S_Map.arrMap ) ,  출발지와 목적지 ( S_Map.start_point,S_Map.end_point )
 % Output = Mid_Point
 
-Mid_Point = [S_Map.pointEnd(1), S_Map.pointEnd(2)];
+Mid_Point = [S_Map.pointEnd(1), S_Map.pointEnd(2)]; %default value
+PP_Global_mode1;
 
-Mid_State = 1;
-Ref_Speed = 5;
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 while(PP_Collision_Check(Robot_State_Array(:,1:Robot_State_Array_index), S_Map) == 0)   % Real; Robot이 coditionArrival을 만족할 때까지 -----> 이 부분이 내가 핵심적으로 건드려야 할 부분임
@@ -45,27 +46,29 @@ while(PP_Collision_Check(Robot_State_Array(:,1:Robot_State_Array_index), S_Map) 
     LRF = S_Sensor.lrfData;
 
     %% Path Planning
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%코드 작성 부%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%% Local Path Planning %%%%%%%%%%%%%%%%%%%%%%%%%%
     % Info
     % 현재 위치 (Robot_State(1), Robot_State(2))
     % 목표 지점 (pointEnd(1), pointEnd(2))
     % 장애물 정보는 구조체(S_Map)의 arrMap에 저장되어 있음
     % Sensor 정보는 LRF 변수에 저장되어 있음
 
+    %% Default
     % 중간 지점을 목적지로하여 로봇이 이동함
-    Goal_x = Mid_Point(Mid_State,1);
-    Goal_y = Mid_Point(Mid_State,2);
-    
-    
+    Goal_x = Mid_Point(Mid_State,2);
+    Goal_y = Mid_Point(Mid_State,1);     
     % 방향 결정
     A_control = atan2d(Goal_y - Robot_State(2), Goal_x - Robot_State(1)) - Robot_State(4);
-
     % 속도 결정
     if(Robot_State(3) > Ref_Speed)
         V_control = 0;
     else
         V_control = 1;
     end
+
+    %
+    PP_Local;
+    %
 
 
     % 중간 목적지에 도달한 경우 다음 지점을 향해서 이동함
@@ -90,6 +93,8 @@ while(PP_Collision_Check(Robot_State_Array(:,1:Robot_State_Array_index), S_Map) 
     %% Show Position and Sensor Data
     PP_Show_Path(Robot_State_Array(:,1:Robot_State_Array_index), S_Map, S_Sensor, 2);
 
+
+    if(initial_flag == 0); initial_flag = 1; end
 end
 Robot_State_Array = Robot_State_Array(:,1:Robot_State_Array_index-1);
 Robot_Input_Array = Robot_Input_Array(:,1:Robot_State_Array_index-1);
