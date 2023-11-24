@@ -1,11 +1,15 @@
 function [ Flag_Collision ] = PP_Collision_Check( Robot_State_Array, S_Map)     % PP_Collision_Check라는 함수는 Robot_State_Array와 S_Map을 인자로 받아 Flag_Collision을 return 함
-%% Collision Check
-Flag_Collision = 1;                                         % Flag_Collision은 0, 1, 2 중 하나의 값을 가질 수 있음
+
+Flag_Collision = 0;                                         % Flag_Collision은 0, 1, 2 중 하나의 값을 가질 수 있음
 Robot_State = Robot_State_Array(:,end);
 map = S_Map.arrMap;
 End_Point = S_Map.pointEnd;
 Arrive_Condition = S_Map.coditionArrival;
 
+%% Collision Check
+if(size(Robot_State_Array,2) == 1)
+    return;
+end
 % map 범위를 벗어나는지 확인
 if(Robot_State(1) < 1 || Robot_State(1) > size(map,1))      % Robot_State(1)은 x를 의미
     return;
@@ -24,12 +28,13 @@ Pre_Robot_State = round(Pre_Robot_State(1:2));
 for i = min(Post_Robot_State(1), Pre_Robot_State(1)) : max(Post_Robot_State(1), Pre_Robot_State(1))
     for j = min(Post_Robot_State(2), Pre_Robot_State(2)) : max(Post_Robot_State(2), Pre_Robot_State(2))
         if(~map(i,j))
+            Flag_Collision = 1;
             return;
         end
     end
 end
 
-Flag_Collision = 0;
+
 
 % 도착지점
 if norm(Robot_State(1:2) - End_Point(1:2)) < Arrive_Condition
